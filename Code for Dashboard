@@ -1,0 +1,125 @@
+title: "Global Superstore Sales"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    theme: yeti
+    
+---
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(knitr)
+library(ggplot2)
+library(plotly)
+library(tidyverse)
+library(readxl)
+library(dplyr)
+
+data <- read_excel("Global Superstore Dataset_Strategy Analytica2.xlsx")
+
+```
+
+SHEET 1
+=======================================================================
+
+Row {data-width=650}
+-----------------------------------------------------------------------
+
+### Point Chart
+
+```{r}
+ggplot(data,aes(x =Category , y = Sales)) + 
+  geom_point(aes(colour = SubCategory), size = 3) + ggtitle("Sales of Categories and Sub categories") +
+  theme(plot.margin = margin(1,1,1,1, "cm"),
+        plot.background = element_rect(fill = "slateblue2"))
+
+
+```
+
+
+
+### Stacked Bar Chart
+
+```{r}
+ggplot(data, aes(x = Market, y = Sales,fill= Category)) +
+  ggtitle("Sales in different Markets Category-Wise") +
+  geom_bar(stat='identity')  +
+  theme(plot.margin = margin(1,1,1,1, "cm"),
+        plot.background = element_rect(fill = "seashell3"))
+
+```
+
+
+Row {data-width=450}
+-----------------------------------------------------------------------
+
+### Lollipop Chart
+
+```{r}
+ggplot(data, aes(x=Region, y=Quantity)) + 
+  geom_point(size=3) + 
+  geom_segment(aes(x=Region, 
+                   xend=Region, 
+                   y=0, 
+                   yend=Quantity)) + 
+  labs(title="Quantity of orders by Region") + 
+  theme(axis.text.x = element_text(angle=65, vjust=0.6))   +
+  theme(plot.margin = margin(1,1,1,1, "cm"),
+        plot.background = element_rect(fill = "slateblue2"))
+
+```
+
+
+
+### Density Chart
+
+```{r}
+g <- ggplot(data, aes(Quantity))
+g + geom_density(aes(fill=factor(Year)), alpha=10) + 
+  labs(title="Quantity of products sold per Year",
+       x="Quantity",
+       fill="Year") + 
+  theme(plot.margin = margin(1,1,1,1, "cm"),
+        plot.background = element_rect(fill = "seashell3"))
+
+```
+
+SHEET 2
+==========================================================================
+
+Column{data-width=450}
+--------------------------------------------------------------------------
+### Histogram
+
+```{r}
+theme_set(theme_classic())
+g <- ggplot(data, aes(Quantity)) + scale_fill_brewer(palette = "Spectral")
+g + geom_histogram(aes(fill=Category), 
+                   bins=5, 
+                   col="black", 
+                   size=.1) +   # change number of bins
+  labs(title="Quantity wise Category Distribution")  +
+  theme(plot.margin = margin(1,1,1,1, "cm"),
+        plot.background = element_rect(fill = "slateblue2"))
+
+```
+
+### Violin Chart
+
+```{r}
+ggplot(data, aes(x=Market, y=Discount, fill = Market)) +
+  geom_violin()  + 
+  labs(title="Discount on products in different Markets")  + 
+  theme(plot.margin = margin(1,1,1,1, "cm"),
+        plot.background = element_rect(fill = "seashell3"))
+
+
+
+```
+
+
+
+
+
+
+
